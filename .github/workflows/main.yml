@@ -58,7 +58,7 @@ jobs:
           terraform apply -auto-approve
         
       - name: Subir estado de Terraform a S3
-        run: aws s3 cp terraform/terraform.tfstate s3://bucketfermin/terraform.tfstate
+        run: aws s3 cp terraform/terraform.tfstate s3://ferminromerotraperodaw/terraform.tfstate
 
 
         
@@ -82,7 +82,7 @@ jobs:
 
       - name: Descargar estado de Terraform desde S3
         run: |
-          aws s3 cp s3://bucketfermin/terraform.tfstate terraform/terraform.tfstate
+          aws s3 cp s3://ferminromerotraperodaw/terraform.tfstate terraform/terraform.tfstate
 
       - name: Inicializar y Destruir Terraform
         run: |

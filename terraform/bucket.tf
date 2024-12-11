@@ -1,5 +1,5 @@
 resource "aws_s3_bucket" "s3" {
-  bucket        = "bucketfermin"
+  bucket        = "ferminromerotraperodaw"
   force_destroy = true
 
 }
@@ -37,13 +37,6 @@ resource "aws_s3_bucket_policy" "bucket_policy" {
   depends_on = [aws_s3_bucket_public_access_block.bucket_public_block]
 }
 
-resource "aws_s3_bucket_website_configuration" "s3_pagina_web" {
-  bucket = aws_s3_bucket.s3.id
-
-  index_document {
-    suffix = "index.html"
-  }
-}
 
 
 
