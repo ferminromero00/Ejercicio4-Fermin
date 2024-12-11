@@ -51,7 +51,7 @@ resource "aws_route_table_association" "asociacion_publica" {
 # Par de Claves SSH para acceso al servidor
 resource "aws_key_pair" "ssh_servidor_apache" {
   key_name   = "apache-server"
-  public_key = file("apache-server.key.pub") # Update this path if needed
+  public_key = file("server.key.pub") # Update this path if needed
   tags       = { Name = "apache-server" }
 }
 
