@@ -29,7 +29,7 @@ jobs:
 
       - name: Ejecutar pruebas unitarias con PHPUnit
         run: |
-          cd php/tests
+          cd tests
           composer clear-cache
           rm -rf vendor composer.lock
           composer install --prefer-dist --no-progress    
