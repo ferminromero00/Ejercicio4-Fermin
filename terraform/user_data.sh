@@ -16,7 +16,7 @@ sudo rm -rf /var/www/html/*
 cd /var/www/html
 sudo dnf install -y git
 sudo git clone https://github.com/ferminromero00/Ejercicio4-Fermin.git
-sudo mv Ejercicio4-Fermin/* .
+sudo mv Ejercicio4-Fermin/php/* .
 
 
 # Configurar permisos
