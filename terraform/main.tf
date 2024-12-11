@@ -49,11 +49,11 @@ resource "aws_route_table_association" "asociacion_publica" {
 }
 
 # Par de Claves SSH para acceso al servidor
-resource "aws_key_pair" "ssh_servidor" {
-  key_name   = "apache-server"
-  public_key = file("server.key.pub") # Update this path if needed
-  tags       = { Name = "apache-server" }
-}
+# resource "aws_key_pair" "ssh_servidor" {
+#   key_name   = "apache-server"
+#   public_key = file("server.key.pub") # Update this path if needed
+#   tags       = { Name = "apache-server" }
+# }
 
 
 # Instancia EC2 para el Servidor Web
