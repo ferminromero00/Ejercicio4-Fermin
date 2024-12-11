@@ -61,7 +61,7 @@ resource "aws_instance" "servidor_web" {
   ami                    = var.ami_id
   instance_type          = var.instance_type
   subnet_id              = aws_subnet.subred_publica.id
-  key_name               = aws_key_pair.ssh_servidor.key_name
+  # key_name               = aws_key_pair.ssh_servidor.key_name
   vpc_security_group_ids = [aws_security_group.grupo_seguridad_servidor.id]
 
   user_data = file("user_data.sh")
