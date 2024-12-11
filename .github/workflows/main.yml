@@ -1,0 +1,91 @@
+name: Desplegar-Destruir
+
+on:
+  workflow_dispatch:
+    inputs:
+      action:
+        description: "Selecciona una acción: deploy o destroy"
+        required: true
+        default: "deploy"
+        type: choice
+        options:
+          - deploy
+          - destroy
+
+jobs:
+  deploy:
+    if: ${{ github.event.inputs.action == 'deploy' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4.2.1
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.1'
+          extensions: mbstring, xml
+          coverage: xdebug
+
+      - name: Ejecutar pruebas unitarias con PHPUnit
+        run: |
+          cd php/tests
+          composer clear-cache
+          rm -rf vendor composer.lock
+          composer install --prefer-dist --no-progress    
+          vendor/bin/phpunit IndexTest.php --testdox         
+
+      - name: Configurar credenciales AWS
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
+          aws-region: "us-east-1"
+
+      - name: Configurar Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Inicializar y Planificar Terraform
+        run: |
+          cd terraform
+          terraform init
+          terraform plan
+
+      - name: Aplicar Terraform
+        run: |
+          cd terraform
+          terraform apply -auto-approve
+        
+      - name: Subir estado de Terraform a S3
+        run: aws s3 cp terraform/terraform.tfstate s3://bucketfermin/terraform.tfstate
+
+
+        
+  destroy:
+    if: ${{ github.event.inputs.action == 'destroy' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4.2.1
+
+      - name: Configurar credenciales AWS
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
+          aws-region: "us-east-1"
+
+      - name: Configurar Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Descargar estado de Terraform desde S3
+        run: |
+          aws s3 cp s3://bucketfermin/terraform.tfstate terraform/terraform.tfstate
+
+      - name: Inicializar y Destruir Terraform
+        run: |
+          cd terraform
+          terraform init
+          terraform destroy -auto-approve
