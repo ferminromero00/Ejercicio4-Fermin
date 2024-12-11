@@ -49,7 +49,7 @@ resource "aws_route_table_association" "asociacion_publica" {
 }
 
 # Par de Claves SSH para acceso al servidor
-resource "aws_key_pair" "ssh_servidor_apache" {
+resource "aws_key_pair" "ssh_servidor" {
   key_name   = "apache-server"
   public_key = file("server.key.pub") # Update this path if needed
   tags       = { Name = "apache-server" }
@@ -61,7 +61,7 @@ resource "aws_instance" "servidor_web" {
   ami                    = var.ami_id
   instance_type          = var.instance_type
   subnet_id              = aws_subnet.subred_publica.id
-  key_name               = aws_key_pair.ssh_servidor_apache.key_name
+  key_name               = aws_key_pair.ssh_servidor.key_name
   vpc_security_group_ids = [aws_security_group.grupo_seguridad_servidor.id]
 
   user_data = file("user_data.sh")
